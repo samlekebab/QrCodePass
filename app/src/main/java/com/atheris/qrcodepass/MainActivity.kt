@@ -27,9 +27,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.integration.android.IntentIntegrator
-import com.robertlevonyan.components.picker.ItemModel
-import com.robertlevonyan.components.picker.ItemType
-import com.robertlevonyan.components.picker.pickerDialog
+import com.atheris.qrcodepass.picker.ItemModel
+import com.atheris.qrcodepass.picker.ItemType
+import com.atheris.qrcodepass.picker.pickerDialog
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
