@@ -1,6 +1,5 @@
 package com.atheris.qrcodepass
 
-import android.R
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -51,7 +50,7 @@ class QR(val context: Context) {
                 return mImage
             }
 
-            return BitmapFactory.decodeResource(context.resources, com.atheris.qrcodepass.R.mipmap.ic_launcher_foreground)
+            return BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_foreground)
         }
         return mImage
     }
@@ -90,24 +89,25 @@ class QR(val context: Context) {
             isInit =false;
         }
             //request a widget update
-            val intent = Intent(context.applicationContext, QrCodeWidget::class.java)
-            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            val widgetManager = AppWidgetManager.getInstance(context)
-            val ids = widgetManager.getAppWidgetIds(
-                ComponentName(
-                    context,
-                    QrCodeWidget::class.java
-                )
+            widgetUpdate()
+
+
+    }
+    fun widgetUpdate(){
+        val intent = Intent(context.applicationContext, QrCodeWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val widgetManager = AppWidgetManager.getInstance(context)
+        val ids = widgetManager.getAppWidgetIds(
+            ComponentName(
+                context,
+                QrCodeWidget::class.java
             )
+        )
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                widgetManager.notifyAppWidgetViewDataChanged(ids, R.id.list)
-            }
+        widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list)
 
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            context.sendBroadcast(intent)
-
-
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        context.sendBroadcast(intent)
     }
     fun getData_fr():String{
         val qrCodeString = context.getSharedPreferences(sharedPrefName,Context.MODE_PRIVATE).getString("qrCode","")
@@ -148,6 +148,9 @@ class QR(val context: Context) {
         }
         return false
     }
+    fun isFR():Boolean{
+        TODO("faire en sorte que le qrcode soit par defaut")
+    }
     fun getData():String {
         if (isEU()) {
             //logd("getData")
@@ -176,6 +179,7 @@ class QR(val context: Context) {
             //logd(res)
             return res+ context.getString(com.atheris.qrcodepass.R.string.pass_europe)
         }
+
         return getData_fr()
     }
     fun b45toHexAndInflateAndDecode(input : String): String{

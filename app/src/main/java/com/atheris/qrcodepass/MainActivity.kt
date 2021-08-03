@@ -409,7 +409,6 @@ class MainActivity() : AppCompatActivity(), InZoom{
             unlockButton.setOnClickListener {
                 activButtons()
             }
-
         }
 
         lockButton.visibility=View.VISIBLE
@@ -467,7 +466,6 @@ class MainActivity() : AppCompatActivity(), InZoom{
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
-
     }
 
     override fun onBackPressed() {

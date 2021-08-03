@@ -1,5 +1,6 @@
 package com.atheris.qrcodepass
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.viewpager2.widget.ViewPager2
 
 class DotView(private val mContext : Context, attrs:AttributeSet) : LinearLayout(mContext,attrs) {
     lateinit var dots : MutableList<ImageView>
+
+
 
     var dotResource = R.drawable.ic_dot
     var focusDotResource = R.drawable.ic_dot_focus
@@ -63,4 +66,6 @@ class DotView(private val mContext : Context, attrs:AttributeSet) : LinearLayout
         })
 
     }
+
+
 }

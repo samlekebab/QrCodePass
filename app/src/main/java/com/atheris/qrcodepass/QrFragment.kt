@@ -33,6 +33,7 @@ class QrFragment() : Fragment(), deleteInterface {
     override fun onResume() {
         super.onResume()
         updateQr()
+
     }
     fun updateQr(){
         var textName = view?.findViewById<TextView>(R.id.dataText)
@@ -41,6 +42,7 @@ class QrFragment() : Fragment(), deleteInterface {
         if (imageView != null) {
             qr.setQr(imageView)
             textName?.text = qr.getData()
+            qr.widgetUpdate()
         }
     }
 
