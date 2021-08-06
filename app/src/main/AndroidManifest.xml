@@ -6,6 +6,8 @@
     <uses-feature android:name="android.hardware.camera"
         android:required="true"/>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <permission android:name="android.permission.FLASHLIGHT"/>
@@ -17,24 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PasseSanitaire" >
-        <!--<provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.atheris.qrcodepass.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
-        </provider>-->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.atheris.qrcodepass.provider.debug"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+
         <receiver android:name="com.atheris.qrcodepass.QrCodeWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

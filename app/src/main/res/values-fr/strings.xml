@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pass_europe">(pass Européen)</string>
+    <string name="pass_francais">(pass français)</string>
+    <string name="default_id">ajoutez votre pass \n avec le bouton en bas à droite</string>
+    <string name="qr_code_hint">scannez le QR-Code du pass sanitaire</string>
+    <string name="add_pic">Ajouter un document</string>
+    <string name="long_press_toast">appuyez longtemps</string>
+    <string name="error_code">erreur QR Code</string>
+</resources>

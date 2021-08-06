@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-parcelize'
 }
 
 android {
@@ -11,19 +10,19 @@ android {
         applicationId "com.atheris.qrcodepass"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 11
-        versionName "0.3.0"
+        versionCode 10
+        versionName "0.2.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables{
+            useSupportLibrary=true
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            applicationIdSuffix ".dev"
         }
     }
     compileOptions {
@@ -32,9 +31,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-    buildFeatures {
-        viewBinding true
     }
 }
 
@@ -52,10 +48,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation 'com.google.zxing:javase:3.3.2'
-    implementation('com.journeyapps:zxing-android-embedded:4.2.0') { transitive = false }
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.google.zxing:core:3.3.0'
+    implementation project(":qrcode")
 
     implementation 'co.nstant.in:cbor:0.9'
 
@@ -66,6 +59,12 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.2.3"
     implementation "androidx.fragment:fragment-ktx:1.3.5"
 
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+
     //implementation 'com.robertlevonyan.components:Picker:2.1.2'
+
+    implementation 'com.google.zxing:javase:3.3.2'
+    implementation('com.journeyapps:zxing-android-embedded:4.2.0') { transitive = false }
+    implementation 'com.google.zxing:core:3.3.0'
 
 }

@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.atheris.qrcodepass.qrcode.logd
 
-class QrFragment() : Fragment(), deleteInterface {
+class QrFragment() : Fragment(), DeleteInterface {
     lateinit var qr: QR;
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +34,6 @@ class QrFragment() : Fragment(), deleteInterface {
     override fun onResume() {
         super.onResume()
         updateQr()
-
     }
     fun updateQr(){
         var textName = view?.findViewById<TextView>(R.id.dataText)
@@ -42,7 +42,6 @@ class QrFragment() : Fragment(), deleteInterface {
         if (imageView != null) {
             qr.setQr(imageView)
             textName?.text = qr.getData()
-            qr.widgetUpdate()
         }
     }
 

@@ -14,7 +14,6 @@
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/bg_rounded_square.xml" value="0.290625" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/bg_square.xml" value="0.290625" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.38125" />
-        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_baseline_flash_on_24.xml" value="0.17083333333333334" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_baseline_qr_code_scanner_24.xml" value="0.38125" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_camera.xml" value="0.290625" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_dot.xml" value="0.17083333333333334" />
@@ -23,10 +22,13 @@
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_image.xml" value="0.290625" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_video_library.xml" value="0.290625" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/ic_videocam.xml" value="0.290625" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/layout/item_picker_grid.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/layout/item_picker_list.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/layout/page_fragment.xml" value="0.1546875" />
-        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/layout/qr_code_widget.xml" value="0.1546875" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.38125" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.38125" />
+        <entry key="..\:/Users/samue/Documents/Android Project/qrcode/src/main/res/drawable/default_qrcode.xml" value="1.74375" />
+        <entry key="..\:/Users/samue/Documents/Android Project/wear/src/main/res/layout/main_activity.xml" value="0.5" />
       </map>
     </option>
   </component>

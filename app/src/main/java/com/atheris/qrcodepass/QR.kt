@@ -1,5 +1,6 @@
 package com.atheris.qrcodepass
 
+import com.atheris.qrcodepass.R
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -12,88 +13,19 @@ import android.widget.ImageView
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.model.Array
 import co.nstant.`in`.cbor.model.ByteString
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.datamatrix.DataMatrixWriter
-import com.google.zxing.qrcode.QRCodeWriter
+import com.atheris.qrcodepass.qrcode.QrGetter
 import java.io.ByteArrayInputStream
 import java.lang.Exception
 import java.util.*
 import java.util.zip.Inflater
 import java.net.URLDecoder
-
-var logd = {msg:String->Log.d("mtag",msg)}
-
-class QR(val context: Context) {
-    companion object{
-        lateinit var mImage : Bitmap
-        var isInit=false
-    }
-    fun setQr(imageView : ImageView){
-        getQr()
-        if(isInit) {
-            imageView.setImageBitmap(mImage)
-            imageView.imageAlpha=255
-        }else{
-            imageView.imageAlpha=0
-        }
-    }
-    fun isInitialised():Boolean{
-        return isInit
-    }
-    fun getQr():Bitmap{
-        if (!isInit){
-
-            val qrCodeString = context.getSharedPreferences(sharedPrefName,Context.MODE_PRIVATE).getString("qrCode","")
-            if (!qrCodeString.isNullOrEmpty()) {
-                updateQr(qrCodeString.toString())
-                isInit = true
-                return mImage
-            }
-
-            return BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_foreground)
-        }
-        return mImage
-    }
-    fun updateQr(ivalue:String) {
-
-        var value = ivalue
-
-        if (value.contains('#')){
-            value = value.slice(value.findAnyOf(listOf("#"))?.first!!+1 until value.length)
-            value = URLDecoder.decode(value)
-        }
-
-        val sharedPref = context.getSharedPreferences(sharedPrefName,Context.MODE_PRIVATE)?: return
-        with (sharedPref.edit()) {
-            putString("qrCode", value)
-            apply()
-        }
-        mImage = Bitmap.createBitmap(width, width, Bitmap.Config.RGB_565)
-        //Log.d("mtag",value);
-        if (!value.isNullOrEmpty()) {
-            val qrCodeWriter = if (isEU()){QRCodeWriter()}else{DataMatrixWriter()}
-            val bitMatrix = qrCodeWriter.encode(
-                value,
-                if (isEU()) {BarcodeFormat.QR_CODE}else{BarcodeFormat.DATA_MATRIX},
-                width, width
-            )
-
-            for (i in 0 until width) {
-                for (j in 0 until width) {
-                    mImage.setPixel(i, j, if (bitMatrix[i, j]) 0 else 0xFFFFFF)
-
-                }
-            }
-
-        }else{
-            isInit =false;
-        }
-            //request a widget update
-            widgetUpdate()
+import com.atheris.qrcodepass.qrcode.logd
 
 
-    }
-    fun widgetUpdate(){
+class QR(context: Context) : QrGetter(context, sharedPrefName, width) {
+
+
+    override fun widgetUpdate(){
         val intent = Intent(context.applicationContext, QrCodeWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         val widgetManager = AppWidgetManager.getInstance(context)
@@ -137,17 +69,7 @@ class QR(val context: Context) {
         return res
 
     }
-    fun isEU() : Boolean{
-        var start = context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE).getString("qrCode", "")!!
-        if (start.length>=4) {
-            start = start.slice(0..3)
-            //logd("$start")
-            if (start == "HC1:" || start == "HC2:") {
-                return true
-            }
-        }
-        return false
-    }
+
     fun isFR():Boolean{
         TODO("faire en sorte que le qrcode soit par defaut")
     }

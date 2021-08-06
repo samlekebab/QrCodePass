@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import com.journeyapps.barcodescanner.CaptureActivity
+import com.atheris.qrcodepass.qrcode.logd
 
 class MCaptureActivity : CaptureActivity(){
 

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name" translatable="false">pass QR-Code</string>
+    <string name="pass_europe"> (european pass)</string>
+    <string name="pass_francais"> (french pass)</string>
+    <string name="default_id">Add your certificate \n with the bottom right button</string>
+    <string name="qr_code_hint">scan the QR-Code of your Certificate</string>
+    <string name="add_pic">add a document</string>
+    <string name="long_press_toast">press longer</string>
+    <string name="error_code">error QR Code</string>
+
+
+    <string name="photo" translatable="false">Take Photo</string>
+    <string name="gallery" translatable="false">Open Gallery</string>
+    <string name="video" translatable="false">Record Video</string>
+    <string name="vgallery" translatable="false">Choose Video</string>
+    <string name="file" translatable="false">Select File</string>
+</resources>

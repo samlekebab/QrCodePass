@@ -1,0 +1,10 @@
+package com.atheris.qrcodepass.picker
+
+/*https://github.com/robertlevonyan/media-picker*/
+import androidx.recyclerview.widget.DiffUtil
+
+internal class ItemModelDiffCallback: DiffUtil.ItemCallback<ItemModel>() {
+  override fun areItemsTheSame(oldItem: ItemModel, newItem: ItemModel): Boolean = oldItem.type == newItem.type
+
+  override fun areContentsTheSame(oldItem: ItemModel, newItem: ItemModel): Boolean = oldItem == newItem
+}

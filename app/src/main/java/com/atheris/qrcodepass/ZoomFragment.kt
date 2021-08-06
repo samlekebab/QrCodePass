@@ -3,7 +3,6 @@ package com.atheris.qrcodepass
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.opengl.Matrix
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -15,17 +14,19 @@ import androidx.core.animation.doOnStart
 import androidx.fragment.app.Fragment
 import kotlin.math.exp
 import kotlin.math.max
+import com.atheris.qrcodepass.qrcode.logd
 
 open class ZoomFragment(var inZoom: InZoom?): Fragment() {
-    var trStartX=0f
-    var trStartY=0f
-    var isInZoomAtBegining=false
-    val easeOut = TimeInterpolator { f ->
+    private var trStartX=0f
+    private var trStartY=0f
+    private var isInZoomAtBeginning=false
+    private val easeOut = TimeInterpolator { f ->
         (1f-exp(-5*f))/(1f-exp(-5f))
     }
+
     var scaleAnimator  = ValueAnimator().apply {
         duration = 230
-        startDelay=1800
+        startDelay= 1800
         interpolator = easeOut
         addUpdateListener { v ->
             val scale = v.animatedValue as Float
@@ -42,10 +43,10 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
                 trStartX = it.translationX
                 trStartY = it.translationY
             }
-            isInZoomAtBegining = inZoom!!.inZoom
+            isInZoomAtBeginning = inZoom!!.inZoom
         }
         this.doOnEnd {
-            if (isInZoomAtBegining)
+            if (isInZoomAtBeginning)
                 inZoom?.inZoom = false
         }
     }
@@ -169,9 +170,6 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
         }
     }
 
-    var startX=0f
-    var startY=0f
-    var isOneTouch=false
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -185,7 +183,7 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
         view.setOnTouchListener { _, event ->
             mScaleGestureDetector.onTouchEvent(event);
             mDragDetector.onTouchEvent(event);
-            event.x
+
             if (event.action == MotionEvent.ACTION_UP && inZoom!=null && inZoom!!.inZoom && !scaleAnimator.isStarted){
                 //logd("motion up")
                 scaleAnimator.start()
@@ -195,7 +193,16 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
     }
 
     override fun onDestroy() {
-        scaleAnimator.cancel()
+        /*if (scaleAnimator != null && scaleAnimator.isStarted) {
+            scaleAnimator.cancel()
+        }*/
+        scaleAnimator.removeAllListeners()
+        scaleAnimator.removeAllUpdateListeners()
+        zoomDoubleTapAnimation.removeAllListeners()
+        zoomDoubleTapAnimation.removeAllUpdateListeners()
+
+        logd("annimation listner removed on OnDestroy")
+
         super.onDestroy()
     }
 

@@ -1,2 +1,4 @@
 rootProject.name = "QrCodePass"
 include ':app'
+include ':wear'
+include ':qrcode'
