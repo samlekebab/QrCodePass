@@ -8,6 +8,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-anydpi/ic_flash.xml" value="1.74375" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-anydpi/ic_folder.xml" value="1.74375" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-nodpi-v4/ic_baseline_flash_on_24.xml" value="1.11875" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-nodpi-v4/ic_baseline_folder_24.xml" value="1.11875" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-nodpi/ic_baseline_flash_on_24.xml" value="1.11875" />
+        <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-nodpi/ic_baseline_folder_24.xml" value="1.11875" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-v21/ic_dot.xml" value="0.17083333333333334" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable-v21/ic_dot_focus.xml" value="0.25" />
         <entry key="..\:/Users/samue/Documents/Android Project/app/src/main/res/drawable/bg_circle.xml" value="0.290625" />
