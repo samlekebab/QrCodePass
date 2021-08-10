@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,11 +46,15 @@ class ImgFragment(private var position: Int,inZoom : InZoom?) : ZoomFragment(inZ
             .toString()
         logd(position.toString())
         logd(imageUri)
+
         return inflater.inflate(R.layout.page_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.clipToOutline = true
+        }
         ImageLoader(this,imageUri).updateImage()
     }
 

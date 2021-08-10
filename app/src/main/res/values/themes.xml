@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.PasseSanitaire" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/back</item>
-        <item name="colorPrimaryVariant">@color/back</item>
+        <item name="colorPrimary">@color/front</item>
+        <item name="colorPrimaryVariant">@color/front</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/front</item>
@@ -15,8 +15,8 @@
     </style>
     <style name="ImagePicker">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/back</item>
-        <item name="colorPrimaryVariant">@color/back</item>
+        <item name="colorPrimary">@color/front</item>
+        <item name="colorPrimaryVariant">@color/front</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/front</item>

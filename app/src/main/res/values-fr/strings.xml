@@ -7,4 +7,7 @@
     <string name="add_pic">Ajouter un document</string>
     <string name="long_press_toast">appuyez longtemps</string>
     <string name="error_code">erreur QR Code</string>
+    <string name="confirm_delete">do you want to delete this page ?</string>
+    <string name="delete">delete</string>
+    <string name="cancel">cancel</string>
 </resources>

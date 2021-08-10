@@ -1,5 +1,6 @@
 package com.atheris.qrcodepass
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,9 @@ class QrFragment() : Fragment(), DeleteInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.clipToOutline = true
+        }
         updateQr()
     }
 

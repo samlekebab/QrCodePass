@@ -6,7 +6,12 @@
     <dimen name="icon">48dp</dimen>
     <dimen name="icon_small">40dp</dimen>
 
-    <dimen name="margin_button_bottom">16dp</dimen>
+    <dimen name="margin_button_bottom">8dp</dimen>
     <dimen name="margin_button_border">8dp</dimen>
     <dimen name="margin_button_inter">8dp</dimen>
+
+    <dimen name="title_textSize">20sp</dimen>
+    <dimen name="title_margin">12dp</dimen>
+
+    <dimen name="qr_margin">4dp</dimen>
 </resources>

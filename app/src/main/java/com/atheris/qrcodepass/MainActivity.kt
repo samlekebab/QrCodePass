@@ -2,6 +2,7 @@ package com.atheris.qrcodepass
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
@@ -10,14 +11,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.DisplayMetrics
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.*
@@ -27,12 +33,14 @@ import com.atheris.qrcodepass.picker.ItemModel
 import com.atheris.qrcodepass.picker.ItemType
 import com.atheris.qrcodepass.picker.pickerDialog
 import com.atheris.qrcodepass.qrcode.logd
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 
 const val width=350//pixels of the width of a qr_code
@@ -42,10 +50,10 @@ interface InZoom{
 }
 class MainActivity() : AppCompatActivity(), InZoom{
 
-    private lateinit var scanButton :FloatingActionButton
-    private lateinit var picButton :FloatingActionButton
-    private lateinit var delButton :FloatingActionButton
-    private lateinit var lockButton :FloatingActionButton
+    private lateinit var scanButton :ImageView
+    private lateinit var picButton :ImageView
+    private lateinit var delButton :ImageView
+    private lateinit var lockButton :ImageView
     private lateinit var unlockButton :FloatingActionButton
     private lateinit var mPager : ViewPager2
     private lateinit var dotView : DotView
@@ -80,7 +88,13 @@ class MainActivity() : AppCompatActivity(), InZoom{
 
     private var torch=false
     private var qr= QR(this)
+    // replace 10 with the value you want for margin in dp.
 
+
+    public fun dpToPx(dp:Int):Int {
+        val displayMetrics = this.resources.displayMetrics;
+        return (dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt();
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +107,11 @@ class MainActivity() : AppCompatActivity(), InZoom{
         unlockButton = findViewById(R.id.lockOpen)
         mPager = findViewById(R.id.pager)
         dotView = findViewById(R.id.dot_view)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById<ConstraintLayout>(R.id.main_contraintLayout).apply {
+                    clipToOutline=false
+            }
+        }
 
         activButtons()
         if (mySharedPref.getBoolean("lockState",false))
@@ -102,6 +121,7 @@ class MainActivity() : AppCompatActivity(), InZoom{
             count = mySharedPref.getInt("count", 0) + 1
         }
         mPager.offscreenPageLimit = 2
+        mPager.setPageTransformer (MarginPageTransformer(dpToPx(30)))
         dotView.registerViewPager2(mPager)
 
 
@@ -422,23 +442,31 @@ class MainActivity() : AppCompatActivity(), InZoom{
         }
 
         delButton.setOnClickListener{
-            ((mPager.adapter as PagerAdapter).map[mPager.currentItem] as DeleteInterface).deleteContent()
-            if (mPager.currentItem>=1){
-                val count = (mPager.adapter as PagerAdapter).count
+            MaterialAlertDialogBuilder(this).run {
+                setMessage(getString(R.string.confirm_delete))
+                setNegativeButton(getString(R.string.cancel)){_,_->}
+                setPositiveButton(getString(R.string.delete)
+                ) { _, _ ->
+                    ((mPager.adapter as PagerAdapter).map[mPager.currentItem] as DeleteInterface).deleteContent()
+                    if (mPager.currentItem >= 1) {
+                        val count = (mPager.adapter as PagerAdapter).count
 
-                with(mySharedPref.edit()) {
-                    for (i in (mPager.currentItem) until count - 1) {
-                        putString("img${i - 1}", mySharedPref.getString("img${i}", ""))
+                        with(mySharedPref.edit()) {
+                            for (i in (mPager.currentItem) until count - 1) {
+                                putString("img${i - 1}", mySharedPref.getString("img${i}", ""))
+                            }
+                            apply()
+                        }
+
+                        logd("remove ${mPager.currentItem}")
+                        (mPager.adapter as PagerAdapter).putAtTheEnd(mPager.currentItem)
+                        //(mPager.adapter as PagerAdapter).notifyItemMoved(mPager.currentItem, (mPager.adapter as PagerAdapter).count)
+                        //(mPager.adapter as PagerAdapter).notifyItemRemoved(mPager.currentItem-1)
+                        (mPager.adapter as PagerAdapter).count--
+                        (mPager.adapter as PagerAdapter).notifyDataSetChanged()
                     }
-                    apply()
                 }
-
-                logd("remove ${mPager.currentItem}")
-                (mPager.adapter as PagerAdapter).putAtTheEnd(mPager.currentItem)
-                //(mPager.adapter as PagerAdapter).notifyItemMoved(mPager.currentItem, (mPager.adapter as PagerAdapter).count)
-                //(mPager.adapter as PagerAdapter).notifyItemRemoved(mPager.currentItem-1)
-                (mPager.adapter as PagerAdapter).count--
-                (mPager.adapter as PagerAdapter).notifyDataSetChanged()
+                show()
             }
         }
 

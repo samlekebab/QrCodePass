@@ -7,8 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="back">#bc87ac</color>
-    <color name="front">#61ceb8</color>
+    <!--<color name="back">#bc87ac</color>
+    <color name="front">#61ceb8</color>-->
+    <color name="back">#EFD591</color>
+    <color name="front">#C46F3E</color>
     <color name="grey">#404044</color>
 
     <color name="colorYellow">#e7a942</color>

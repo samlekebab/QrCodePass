@@ -162,7 +162,7 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
                 //scaleAnimator.startDelay=tmp
                 //scaleAnimator.currentPlayTime=0
             }else{
-                zoomDoubleTapAnimation.setFloatValues(1f,2f)
+                zoomDoubleTapAnimation.setFloatValues((view as ConstraintLayout).getChildAt(0).scaleX,2f)
                 zoomDoubleTapAnimation.start()
                 inZoom!!.inZoom=true
             }
