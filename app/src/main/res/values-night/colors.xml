@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#59636D</color>
+    <!--<color name="back">#bc87ac</color>
+    <color name="front">#61ceb8</color>-->
+    <color name="back">#202020</color>
+    <color name="front">#d1a24d</color>
+    <color name="grey">#404044</color>
+    <color name="menuText">#CCCCCC</color>
+
+    <color name="colorYellow">#e7a942</color>
+    <color name="colorHighlight">#1a1a18</color>
+</resources>

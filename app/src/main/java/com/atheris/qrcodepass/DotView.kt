@@ -3,10 +3,12 @@ package com.atheris.qrcodepass
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.atheris.qrcodepass.qrcode.logd
 
-class DotView(mContext : Context, attrs:AttributeSet) : LinearLayout(mContext,attrs) {
+class DotView(mContext : Context,attrs:AttributeSet) : LinearLayout(mContext,attrs) {
     private lateinit var dots : MutableList<ImageView>
 
 
@@ -30,13 +32,25 @@ class DotView(mContext : Context, attrs:AttributeSet) : LinearLayout(mContext,at
             }
         }
 
-    init{
+    init {
+        var l=0
+        context.theme.obtainStyledAttributes(attrs, R.styleable.DotView, 0, 0).run {
+
+            try {
+                l = getInteger(R.styleable.DotView_dotDirection,0)
+            }finally {
+                if (l>0){
+                    orientation= VERTICAL
+                }
+            }
+        }
         pageNumber=if (isInEditMode)(4)else(1)
         currentPage=if (isInEditMode)(2)else(0)
     }
     private fun inflateDot():View=inflate(context,R.layout.dot_view,this)
 
     private fun onPageNumberChange(){
+        logd("page number $pageNumber")
         this.removeAllViews()
         dots = mutableListOf()
         for (i in 1..pageNumber) {
@@ -48,12 +62,21 @@ class DotView(mContext : Context, attrs:AttributeSet) : LinearLayout(mContext,at
         }
 
         currentPage=currentPage
+        visibility=
+            if (pageNumber<2){
+                INVISIBLE
+            }else{
+                VISIBLE
+            }
+        logd("visibility ${visibility== VISIBLE}")
     }
     private fun onCurrentPageChange(lastPage : Int, mCurrentPage: Int = currentPage){
         if(lastPage<pageNumber) {
             dots[lastPage].setImageResource(dotResource)
         }
         dots[mCurrentPage].setImageResource(focusDotResource)
+
+        logd("visibility ${visibility== VISIBLE}")
     }
 
 

@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ImageView
         android:id="@+id/widgetQrImage"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleX="1"
         android:scaleY="1"
         app:srcCompat="@mipmap/ic_launcher"
-        tools:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@mipmap/ic_launcher"
+        />
 
 </FrameLayout>

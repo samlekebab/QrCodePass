@@ -6,12 +6,16 @@
     <dimen name="icon">48dp</dimen>
     <dimen name="icon_small">40dp</dimen>
 
-    <dimen name="margin_button_bottom">8dp</dimen>
-    <dimen name="margin_button_border">8dp</dimen>
-    <dimen name="margin_button_inter">8dp</dimen>
+    <dimen name="margin_button_bottom">0dp</dimen>
 
-    <dimen name="title_textSize">20sp</dimen>
-    <dimen name="title_margin">12dp</dimen>
+    <dimen name="title_textSize">18sp</dimen>
+    <dimen name="title_margin">4dp</dimen>
 
     <dimen name="qr_margin">4dp</dimen>
+
+    <dimen name="page_margin_top">8dp</dimen>
+    <dimen name="page_margin_side">16dp</dimen>
+
+    <dimen name="button_menu_size">40dp</dimen>
+    <dimen name="menu_item_height">40dp</dimen>
 </resources>

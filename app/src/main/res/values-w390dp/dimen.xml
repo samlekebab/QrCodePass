@@ -3,9 +3,12 @@
     <dimen name="margin_button_bottom">24dp</dimen>
 
 
-    <dimen name="title_textSize">34sp</dimen>
+    <dimen name="title_textSize">28sp</dimen>
     <dimen name="title_margin">24dp</dimen>
 
-
     <dimen name="qr_margin">32dp</dimen>
+
+    <dimen name="page_margin_top">32dp</dimen>
+    <dimen name="page_margin_side">32dp</dimen>
+
 </resources>

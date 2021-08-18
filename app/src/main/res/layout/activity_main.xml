@@ -7,10 +7,63 @@
     tools:context=".MainActivity"
     android:background="@color/front">
 
+    <FrameLayout
+        android:id="@+id/menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/ActionBarConstrainLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@+id/ActionBarConstrainLayout"
+        app:layout_constraintTop_toTopOf="@+id/ActionBarConstrainLayout">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/button_menu_size"
+            android:minHeight="@dimen/button_menu_size"
+            app:srcCompat="@drawable/ic_baseline_menu_24"
+            app:tint="@color/black"
+            android:contentDescription="@string/open_the_menu" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/main_constraintLayout">
+
+        <com.atheris.qrcodepass.MenuItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:text="@string/review_the_app">
+
+        </com.atheris.qrcodepass.MenuItem>
+
+        <com.atheris.qrcodepass.MenuItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:text="@string/turn_cheese_wheel" />
+
+        <com.atheris.qrcodepass.MenuItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:text="@string/add_member">
+
+        </com.atheris.qrcodepass.MenuItem>
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ActionBarConstrainLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView"
@@ -26,8 +79,8 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_contraintLayout"
+    <com.atheris.qrcodepass.MainView
+        android:id="@+id/main_constraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/round_corner_back"
@@ -39,6 +92,58 @@
         app:layout_constraintTop_toBottomOf="@id/ActionBarConstrainLayout">
 
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/dot_view"
+            app:layout_constraintStart_toStartOf="@+id/pager"
+            app:layout_constraintTop_toTopOf="@+id/pager">
+
+            <com.atheris.qrcodepass.DotView
+                android:id="@+id/qr_family_dotview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:dotDirection="vertical" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/arrow_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/dot_view"
+            app:layout_constraintStart_toStartOf="@+id/pager"
+            app:layout_constraintTop_toTopOf="@+id/pager">
+
+            <ImageView
+                android:layout_width="@dimen/page_margin_side"
+                android:layout_height="wrap_content"
+                android:scaleX="0.55"
+                android:scaleY="0.55"
+                app:srcCompat="@drawable/ic_fleche"
+                app:tint="@color/front" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/arrow_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/dot_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pager">
+
+            <ImageView
+                android:layout_width="@dimen/page_margin_side"
+                android:layout_height="wrap_content"
+                android:rotation="180"
+                android:scaleX="0.55"
+                android:scaleY="0.55"
+                app:srcCompat="@drawable/ic_fleche"
+                app:tint="@color/front" />
+
+        </FrameLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="0dp"
@@ -48,6 +153,45 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/add_a_document"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/scan"
+                app:layout_constraintStart_toEndOf="@+id/delete"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_photo"
+                android:focusable="true" />
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/delete_the_current_page"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/pic"
+                app:layout_constraintStart_toEndOf="@id/framLock"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_poubelle" />
+
+            <ImageView
+                android:id="@+id/scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_button_bottom"
+                android:layout_marginBottom="@dimen/margin_button_bottom"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/pic"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_qr"
+                android:focusable="true" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/framLock"
@@ -63,7 +207,7 @@
                 tools:clipChildren="false"
                 tools:clipToPadding="false">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <ImageView
                     android:id="@+id/lockOpen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -71,7 +215,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_lock_open_24" />
+                    app:srcCompat="@drawable/ic_cadena"
+                    android:focusable="true" />
 
                 <ImageView
                     android:id="@+id/lockClose"
@@ -82,56 +227,23 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_cadena" />
+                    app:srcCompat="@drawable/ic_cadena"
+                    android:focusable="true" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/scan"
-                app:layout_constraintStart_toEndOf="@+id/delete"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
-
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_poubelle"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/pic"
-                app:layout_constraintStart_toEndOf="@id/framLock"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_button_bottom"
-                android:layout_marginBottom="@dimen/margin_button_bottom"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/pic"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_qr" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_button_bottom"
+            android:layout_marginTop="@dimen/page_margin_top"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingStart="@dimen/page_margin_side"
+            android:paddingEnd="@dimen/page_margin_side"
             app:layout_constraintBottom_toTopOf="@+id/dot_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -150,6 +262,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.atheris.qrcodepass.MainView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

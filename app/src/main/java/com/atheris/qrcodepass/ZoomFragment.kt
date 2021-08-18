@@ -12,17 +12,20 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.Fragment
+import com.atheris.qrcodepass.qrcode.logd
 import kotlin.math.exp
 import kotlin.math.max
-import com.atheris.qrcodepass.qrcode.logd
 
 open class ZoomFragment(var inZoom: InZoom?): Fragment() {
     private var trStartX=0f
     private var trStartY=0f
     private var isInZoomAtBeginning=false
-    private val easeOut = TimeInterpolator { f ->
-        (1f-exp(-5*f))/(1f-exp(-5f))
+    companion object {
+        val easeOut = TimeInterpolator { f ->
+            (1f - exp(-5 * f)) / (1f - exp(-5f))
+        }
     }
+
 
     var scaleAnimator  = ValueAnimator().apply {
         duration = 230
@@ -169,7 +172,13 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
             return true
         }
     }
-
+    fun endZoom(){
+        scaleAnimator.cancel()
+        scaleAnimator.startDelay=0
+        logd("end zoom")
+        scaleAnimator.setFloatValues((view as ConstraintLayout).getChildAt(0).scaleX,1f)
+        scaleAnimator.start()
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -201,7 +210,6 @@ open class ZoomFragment(var inZoom: InZoom?): Fragment() {
         zoomDoubleTapAnimation.removeAllListeners()
         zoomDoubleTapAnimation.removeAllUpdateListeners()
 
-        logd("annimation listner removed on OnDestroy")
 
         super.onDestroy()
     }

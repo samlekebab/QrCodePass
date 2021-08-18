@@ -10,16 +10,17 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.atheris.qrcodepass.qrcode.logd
 
-class QrFragment() : Fragment(), DeleteInterface {
-    lateinit var qr: QR;
+class QrFragment(private var noQr:Int = 0) : Fragment(), DeleteInterface {
+
+    private lateinit var qr: QR;
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
-        var inf = inflater.inflate(R.layout.qrcode_fragment, container, false)
-        qr = QR(this.requireContext());
-        return inf
+    ): View {
+        logd("inflate qr $noQr")
+        return inflater.inflate(R.layout.qr_code_fragment_page, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,9 @@ class QrFragment() : Fragment(), DeleteInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //logd("instanciate qr object $noQr")
+        qr = QR(this.requireContext());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.clipToOutline = true
         }
@@ -39,18 +43,25 @@ class QrFragment() : Fragment(), DeleteInterface {
         super.onResume()
         updateQr()
     }
-    fun updateQr(){
-        var textName = view?.findViewById<TextView>(R.id.dataText)
-        var imageView = view?.findViewById<ImageView>(R.id.img1)
-
+    fun updatePosition(position:Int){
+        logd("change qr no from $noQr to $position")
+        noQr=position
+        //updateQr()//not needed
+    }
+    private fun updateQr(){
+        val textName = view?.findViewById<TextView>(R.id.dataText)
+        val imageView = view?.findViewById<ImageView>(R.id.img1)
+        //logd("update qr $noQr")
         if (imageView != null) {
-            qr.setQr(imageView)
-            textName?.text = qr.getData()
+            //logd("set to image view qr $noQr")
+            qr.setQr(imageView,noQr)
+            //logd("get data from qr $noQr")
+            textName?.text = qr.getData(noQr)
         }
     }
 
     override fun deleteContent() {
-        qr.updateQr("")
+        qr.updateQr("",noQr)
         updateQr();
     }
 }

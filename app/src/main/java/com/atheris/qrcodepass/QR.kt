@@ -1,25 +1,16 @@
 package com.atheris.qrcodepass
 
-import com.atheris.qrcodepass.R
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.Build
-import android.util.Log
-import android.widget.ImageView
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.model.Array
 import co.nstant.`in`.cbor.model.ByteString
 import com.atheris.qrcodepass.qrcode.QrGetter
 import java.io.ByteArrayInputStream
-import java.lang.Exception
 import java.util.*
 import java.util.zip.Inflater
-import java.net.URLDecoder
-import com.atheris.qrcodepass.qrcode.logd
 
 
 class QR(context: Context) : QrGetter(context, sharedPrefName, width) {
@@ -41,8 +32,8 @@ class QR(context: Context) : QrGetter(context, sharedPrefName, width) {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         context.sendBroadcast(intent)
     }
-    fun getData_fr():String{
-        val qrCodeString = context.getSharedPreferences(sharedPrefName,Context.MODE_PRIVATE).getString("qrCode","")
+    fun getData_fr(qrNo:Int=0):String{
+        val qrCodeString = context.getSharedPreferences(sharedPrefName,Context.MODE_PRIVATE).getString(keyOf(qrNo),"")
         var res = context.getString(com.atheris.qrcodepass.R.string.default_id)
         if (!qrCodeString.isNullOrEmpty()) {
 
@@ -73,11 +64,11 @@ class QR(context: Context) : QrGetter(context, sharedPrefName, width) {
     fun isFR():Boolean{
         TODO("faire en sorte que le qrcode soit par defaut")
     }
-    fun getData():String {
-        if (isEU()) {
+    fun getData(qrNo: Int = 0):String {
+        if (isEU(qrNo)) {
             //logd("getData")
             val qrCodeString = context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
-                .getString("qrCode", "")
+                .getString(keyOf(qrNo), "")
             var res = context.getString(com.atheris.qrcodepass.R.string.default_id)
             if (!qrCodeString.isNullOrEmpty()) {
                 try {
@@ -102,7 +93,7 @@ class QR(context: Context) : QrGetter(context, sharedPrefName, width) {
             return res+ context.getString(com.atheris.qrcodepass.R.string.pass_europe)
         }
 
-        return getData_fr()
+        return getData_fr(qrNo)
     }
     fun b45toHexAndInflateAndDecode(input : String): String{
 

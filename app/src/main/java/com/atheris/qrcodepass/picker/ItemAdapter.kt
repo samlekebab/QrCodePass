@@ -1,7 +1,6 @@
 package com.atheris.qrcodepass.picker
 
 /*https://github.com/robertlevonyan/media-picker*/
-import com.atheris.qrcodepass.R
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.atheris.qrcodepass.R
 import com.atheris.qrcodepass.databinding.ItemPickerGridBinding
 import com.atheris.qrcodepass.databinding.ItemPickerListBinding
 
@@ -58,7 +58,7 @@ internal class ItemAdapter(private val listType: PickerDialog.ListType, private 
         protected fun initIcon(item: ItemModel, icon: ImageView) {
             val iconRes = if (item.itemIcon == 0) {
                 when (item.type) {
-                    ItemType.ITEM_CAMERA -> R.drawable.ic_camera
+                    ItemType.ITEM_CAMERA -> R.drawable.ic_photo
                     ItemType.ITEM_GALLERY -> R.drawable.ic_image
                     ItemType.ITEM_VIDEO -> R.drawable.ic_videocam
                     ItemType.ITEM_VIDEO_GALLERY -> R.drawable.ic_video_library

@@ -1,46 +1,41 @@
 package com.atheris.qrcodepass
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.DisplayMetrics
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.zxing.*
-import com.google.zxing.common.HybridBinarizer
-import com.google.zxing.integration.android.IntentIntegrator
 import com.atheris.qrcodepass.picker.ItemModel
 import com.atheris.qrcodepass.picker.ItemType
 import com.atheris.qrcodepass.picker.pickerDialog
 import com.atheris.qrcodepass.qrcode.logd
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.integration.android.IntentIntegrator
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.math.roundToInt
 
 
 const val width=350//pixels of the width of a qr_code
@@ -51,12 +46,19 @@ interface InZoom{
 class MainActivity() : AppCompatActivity(), InZoom{
 
     private lateinit var scanButton :ImageView
-    private lateinit var picButton :ImageView
+    private lateinit var picButton : ImageView
     private lateinit var delButton :ImageView
     private lateinit var lockButton :ImageView
-    private lateinit var unlockButton :FloatingActionButton
+    private lateinit var unlockButton :ImageView
+    private lateinit var leftArrow : FrameLayout
+    private lateinit var rightArrow : FrameLayout
     private lateinit var mPager : ViewPager2
     private lateinit var dotView : DotView
+    private lateinit var qrFamilyDotView : DotView
+    private lateinit var menuButton : FrameLayout
+    private lateinit var menu : LinearLayout
+    private lateinit var mainContainer : MainView
+
 
     //private lateinit var permissionRequest : ActivityResultLauncher<String>;
     private lateinit var unlockToast: Toast
@@ -72,13 +74,7 @@ class MainActivity() : AppCompatActivity(), InZoom{
         ABORD,QR_TORCH_TOGGLE,QR_FILE_PICK,QR_PIC,QR_FILE_RESULT
     }
 
-    /*private var permissionRequestCallback = { isGranted: Boolean ->
-        if (isGranted) {
 
-        } else {
-
-        }
-    }*/
     private val mySharedPref : SharedPreferences
         get () {
             return applicationContext.getSharedPreferences(
@@ -88,13 +84,18 @@ class MainActivity() : AppCompatActivity(), InZoom{
 
     private var torch=false
     private var qr= QR(this)
-    // replace 10 with the value you want for margin in dp.
 
+    val tvAnnimation = ValueAnimator().apply {
+        startDelay=200
+        duration=300
+        setFloatValues(0f,1f)
+        interpolator = ZoomFragment.easeOut
+        addUpdateListener {
+            mPager.scaleY = animatedValue as Float
+        }
 
-    public fun dpToPx(dp:Int):Int {
-        val displayMetrics = this.resources.displayMetrics;
-        return (dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt();
     }
+    var isJustCreated=false;
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,9 +108,16 @@ class MainActivity() : AppCompatActivity(), InZoom{
         unlockButton = findViewById(R.id.lockOpen)
         mPager = findViewById(R.id.pager)
         dotView = findViewById(R.id.dot_view)
+        leftArrow = findViewById(R.id.arrow_prev)
+        rightArrow = findViewById(R.id.arrow_next)
+        qrFamilyDotView = findViewById(R.id.qr_family_dotview)
+        mainContainer = findViewById(R.id.main_constraintLayout)
+        menuButton = findViewById(R.id.menu_button)
+        menu = findViewById(R.id.menu)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            findViewById<ConstraintLayout>(R.id.main_contraintLayout).apply {
-                    clipToOutline=false
+            mainContainer.apply {
+                    clipToOutline=true
             }
         }
 
@@ -117,32 +125,73 @@ class MainActivity() : AppCompatActivity(), InZoom{
         if (mySharedPref.getBoolean("lockState",false))
             deacButtons()
 
-        mPager.adapter = PagerAdapter(supportFragmentManager, lifecycle, this).apply {
-            count = mySharedPref.getInt("count", 0) + 1
+        dotView.registerViewPager2(mPager)
+        mPager.adapter = MainPagerAdapter(supportFragmentManager, lifecycle, this,dotView = dotView,familyDotView = qrFamilyDotView).also {
+            it.count = mySharedPref.getInt("count", 0) + 1
+            mPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position>0){
+                        leftArrow.visibility=View.VISIBLE
+                        (qrFamilyDotView.parent as FrameLayout).visibility=View.INVISIBLE
+                    }else{
+                        leftArrow.visibility=View.INVISIBLE
+                        (qrFamilyDotView.parent as FrameLayout).visibility=View.VISIBLE
+                    }
+                    if (position<it.count-1){
+                        rightArrow.visibility=View.VISIBLE
+                    }else{
+                        rightArrow.visibility=View.INVISIBLE
+                    }
+                }
+
+
+            })
+            leftArrow.setOnClickListener {_->
+                if (mPager.currentItem>0) {
+                    (it.map[mPager.currentItem] as ZoomFragment).endZoom()
+                }
+                mPager.currentItem--
+            }
+            rightArrow.setOnClickListener {_->
+                if (mPager.currentItem>0) {
+                    (it.map[mPager.currentItem] as ZoomFragment).endZoom()
+                }
+                mPager.currentItem++
+            }
+
         }
         mPager.offscreenPageLimit = 2
-        mPager.setPageTransformer (MarginPageTransformer(dpToPx(30)))
-        dotView.registerViewPager2(mPager)
-
-
-        /*mPager.getChildAt(0).setOnTouchListener { _, event ->
-            gestureDetector.onTouchEvent(event)
-            logd("in zoom $inZoom")
-
-            inZoom
-            }*/
-
-
-        /*permissionRequest = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) {
-            permissionRequestCallback(it)
-        }*/
+        mPager.setPageTransformer (MarginPageTransformer(resources.getDimensionPixelOffset(R.dimen.page_margin_side)))
 
         unlockToast = Toast.makeText(applicationContext,getString(R.string.long_press_toast),Toast.LENGTH_SHORT)
 
+        mPager.scaleY = 0f
+        isJustCreated=true
 
+        menuButton.setOnClickListener{
+            mainContainer.toogleMenu()
+        }
 
+        menu.getChildAt(0).setOnClickListener {
+            Intent(Intent.ACTION_VIEW).also {intent->
+                intent.data = Uri.parse("""https://play.google.com/store/apps/details?id=com.atheris.qrcodepass&referrer=utm_source%3Din_app%26utm_medium%3Din_app""")
+                startActivity(intent)
+            }
+        }
+        menu.getChildAt(1).setOnClickListener {
+            Intent(Intent.ACTION_VIEW).also {intent->
+                intent.data = Uri.parse("""https://play.google.com/store/apps/details?id=com.atheris.fromaGame&referrer=utm_source%3Din_app%26utm_medium%3Din_app"""")
+                startActivity(intent)
+            }
+        }
+        menu.getChildAt(2).setOnClickListener {
+            supportFragmentManager.setFragmentResult("addQrcode", Bundle())
+            isAddingMember=true
+            mPager.currentItem=0
+            mainContainer.toogleMenu()
+            startScan()
+        }
 
     }
 
@@ -153,15 +202,36 @@ class MainActivity() : AppCompatActivity(), InZoom{
         (mPager.adapter as PagerAdapter).notifyDataSetChanged()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (isJustCreated) {
+            tvAnnimation.start()
+            isJustCreated = false
+        }
+    }
 
+    private var isAddingMember=false
+    private fun updateQr(qrCode : String){
+        qr.updateQr(qrCode, qrFamilyDotView.currentPage)
+        isAddingMember=false
+    }
+    private fun addQrcodeFailed(){
+        logd("add qr code failed $isAddingMember")
+        if (isAddingMember) {
+            supportFragmentManager.setFragmentResult("addQrcodeFailed",Bundle())
+            isAddingMember = false
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        logd("activity result $requestCode")
+        logd("activity result $requestCode $resultCode")
         when (requestCode) {
 
             //result from the qrcode scanner
             ResultCodes.QR_PIC.ordinal -> {
                 when (resultCode) {
-
+                    ResultCodes.ABORD.ordinal->{
+                        addQrcodeFailed()
+                    }
                         //a qr code has been scanned
                     (-1) -> {
                         logd("code QR_PIC")
@@ -171,9 +241,12 @@ class MainActivity() : AppCompatActivity(), InZoom{
                             val qrCode = scanResult.contents
                             if (!qrCode.isNullOrEmpty()) {
                                 Toast.makeText(this, qrCode, Toast.LENGTH_LONG).show()
-                                qr.updateQr(qrCode)
+                                updateQr(qrCode)
+                            }else{
+                                addQrcodeFailed()
                             }
                         } else {
+                            addQrcodeFailed()
                             Toast.makeText(this, "erreur qr code", Toast.LENGTH_LONG).show()
                         }
                     }
@@ -218,7 +291,7 @@ class MainActivity() : AppCompatActivity(), InZoom{
                                                     BinaryBitmap(HybridBinarizer(it))
                                                 ).text
                                             } catch (e: Exception) {
-
+                                                addQrcodeFailed()
                                                 //if the decoding failed
                                                 e.printStackTrace()
                                                 Toast.makeText(
@@ -235,9 +308,12 @@ class MainActivity() : AppCompatActivity(), InZoom{
 
                         //finally, save the qr code
                         if (!read.isNullOrEmpty())
-                            qr.updateQr(read)
+                            updateQr(read)
+                        else
+                            addQrcodeFailed()
 
                     } catch (e: FileNotFoundException) {//if opening the file failed
+                        addQrcodeFailed()
                         e.printStackTrace()
                         Toast.makeText(
                             this,
@@ -246,74 +322,21 @@ class MainActivity() : AppCompatActivity(), InZoom{
                         ).show()
 
                     } catch (e: java.lang.Exception) {//other error in this process
+                        addQrcodeFailed()
                         Toast.makeText(
                             this,
                             "i'm sorry, a exception has been raised.. \n $e",
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                }else{
+                    addQrcodeFailed()
                 }
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //page adapter for the viewpager2 that show the qr code and the documents
-    private inner class PagerAdapter(fm: FragmentManager,lc:Lifecycle, var inZoom: InZoom): FragmentStateAdapter(fm,lc){
-        var map = HashMap<Int, Fragment>()
-        var count = 2
-            set(v){
-                field = v
-                dotView.pageNumber=field
-            }
-
-        var idList = HashMap<Int,Long>()
-        var lastId:Long=0
-
-        override fun getItemCount(): Int = count
-
-
-        override fun createFragment(position: Int): Fragment {
-            //logd(idList.toString())
-            map[position] = when (position){
-                0-> QrFragment()
-                else-> ImgFragment(position-1, inZoom)
-            }
-            return map[position]!!
-        }
-
-        override fun getItemId(position: Int): Long {
-            //logd(idList.toString())
-            if (idList.containsKey(position))
-                return idList[position]!!
-            idList[position]=lastId++
-            //logd(idList.toString())
-            return idList[position]!!
-        }
-
-        override fun containsItem(itemId: Long): Boolean {
-
-            //logd("containsItem $itemId on ${idList.toString()}")
-            return idList.containsValue(itemId)
-        }
-        fun addElement(){
-            idList[count++]=lastId++
-            //logd(idList.toString())
-        }
-        fun putAtTheEnd(position:Int){
-            arrayOf(idList[position]!!,map[position]!!).let {
-                //logd("$count")
-                for (i in position until count - 1) {
-                    idList[i] = idList[i + 1]!!
-                    map[i]=map[i+1]!!
-                }
-                idList[count] = it[0] as Long
-                map[count]= it[1] as Fragment
-            }
-            //logd(idList.toString())
-        }
-    }
 
     //start the activity that scan the qr code with the camera
     private fun startScan(){
@@ -337,19 +360,7 @@ class MainActivity() : AppCompatActivity(), InZoom{
 
         //to add a document
         picButton.setOnClickListener {
-            /*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-            val photoFile = createImageFile()
-            val photoUri = FileProvider.getUriForFile(this,
-                "com.atheris.qrcodepass.fileprovider",
-                photoFile)
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
-            try {
-                startActivityForResult(takePictureIntent, CAMERA_PIC)
-            } catch (e: ActivityNotFoundException) {
-                logd("error camera")
-                // display error state to the user
-            }*/
             val cameraItem = ItemModel(ItemType.ITEM_CAMERA,
                 itemBackgroundColor = ContextCompat.getColor(this,R.color.front))
             val picItem = ItemModel(ItemType.ITEM_GALLERY,
@@ -375,8 +386,10 @@ class MainActivity() : AppCompatActivity(), InZoom{
                             apply()
                         }
 
-                        (mPager.adapter as PagerAdapter).addElement()
-
+                        (mPager.adapter as PagerAdapter).also { adapt ->
+                            adapt.addElement()
+                            mPager.currentItem = adapt.count-1
+                        }
                         //cant notify data set change here (busy fragment manager error, wtf) -> pushed on OnResume
                         //(mPager.adapter as PagerAdapter).notifyDataSetChanged()
                     }catch (e:FileNotFoundException){
@@ -393,47 +406,6 @@ class MainActivity() : AppCompatActivity(), InZoom{
 
 
             }.show()
-            /*permissionRequestCallback = {
-                var conf = ImagePickerConfig {
-                    returnMode = ReturnMode.ALL
-                    mode = ImagePickerMode.SINGLE
-                    isFolderMode = true
-                    isIncludeVideo = false
-                    theme=R.style.ImagePicker
-
-                    isShowCamera = it
-                    logd(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.path)
-                    savePath = ImagePickerSavePath(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.path,false)
-                    isSaveImage=true
-
-                }
-
-                picPickerCallback={l:List<Image>->
-                    logd("${l.size}")
-                    if (l.size>0){
-                        logd(l[0].path)
-                        File(l[0].path).copyTo(createImageFile(), true)
-                        with(
-                            applicationContext.getSharedPreferences(
-                                sharedPrefName,
-                                Context.MODE_PRIVATE
-                            ).edit()
-                        ) {
-                            putString(
-                                "img${(mPager.adapter as PagerAdapter).count - 1}",
-                                currentPhotoPath
-                            )
-                            apply()
-                        }
-
-                        (mPager.adapter as PagerAdapter).addElement()
-                        (mPager.adapter as PagerAdapter).notifyDataSetChanged()
-                    }
-                    0
-                }
-                picPicker.launch(conf)
-            }*/
-            //permissionRequest.launch(android.Manifest.permission.CAMERA)
         }
 
         //lock and unlock the buttons
@@ -493,27 +465,47 @@ class MainActivity() : AppCompatActivity(), InZoom{
         } else {
             ContextCompat.getColor(this,R.color.front)
         })
-        scanButton.backgroundTintList = color
-        picButton.backgroundTintList = color
-        delButton.backgroundTintList = color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            scanButton.imageTintList = null
+            picButton.imageTintList = null
+            delButton.imageTintList = null
+        }else{
+            scanButton.setColorFilter(Color.parseColor("#00000000"))
+            picButton.setColorFilter(Color.parseColor("#00000000"))
+            delButton.setColorFilter(Color.parseColor("#00000000"))
+        }
     }
 
     //disable the buttons to prevent user to delete by mistake or other...
-    private fun deacButtons(){
-        lockButton.visibility=View.GONE
-        unlockButton.visibility=View.VISIBLE
+    private fun deacButtons() {
+        lockButton.visibility = View.GONE
+        unlockButton.visibility = View.VISIBLE
 
-        val color = ColorStateList.valueOf( if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getColor(R.color.grey)
-        } else {
-            ContextCompat.getColor(this,R.color.grey)
-        })
-        scanButton.backgroundTintList = color
-        scanButton.setOnClickListener{}
-        picButton.backgroundTintList = color
-        picButton.setOnClickListener{}
-        delButton.backgroundTintList = color
-        delButton.setOnClickListener{}
+        val color = ColorStateList.valueOf(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getColor(R.color.grey)
+            } else {
+                ContextCompat.getColor(this, R.color.grey)
+            }
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            scanButton.imageTintList = color
+            picButton.imageTintList = color
+            delButton.imageTintList = color
+        }else{
+            scanButton.setColorFilter(color.defaultColor)
+            picButton.setColorFilter(color.defaultColor)
+            delButton.setColorFilter(color.defaultColor)
+        }
+        val callback = {_:Any?->Toast.makeText(
+            this,
+            "locked, \n push the bottom left button",
+            Toast.LENGTH_SHORT
+        ).show()
+        }
+        scanButton.setOnClickListener(callback)
+        picButton.setOnClickListener (callback)
+        delButton.setOnClickListener (callback)
     }
 
     //we save some shared pref here (counter -> number of pages, lockState -> whether the buttons are enabled or locked)
@@ -550,6 +542,12 @@ class MainActivity() : AppCompatActivity(), InZoom{
         }
         mPager.currentItem=0
         inZoom=false
+    }
+
+    override fun onDestroy() {
+        tvAnnimation.removeAllUpdateListeners()
+        tvAnnimation.removeAllListeners()
+        super.onDestroy()
     }
 
 }

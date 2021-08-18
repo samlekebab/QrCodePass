@@ -12,6 +12,7 @@
     <color name="back">#EFD591</color>
     <color name="front">#C46F3E</color>
     <color name="grey">#404044</color>
+    <color name="menuText">#000000</color>
 
     <color name="colorYellow">#e7a942</color>
     <color name="colorHighlight">#1a1a18</color>

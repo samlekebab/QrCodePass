@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">pass QR-Code</string>
+    <string name="app_name" translatable="false">Pass QR Code</string>
     <string name="pass_europe"> (european pass)</string>
     <string name="pass_francais"> (french pass)</string>
     <string name="default_id">Add your certificate \n with the bottom right button</string>
@@ -17,4 +17,10 @@
     <string name="confirm_delete">do you want to delete this page ?</string>
     <string name="delete">delete</string>
     <string name="cancel">cancel</string>
+    <string name="add_a_document">add a document</string>
+    <string name="delete_the_current_page">Delete the current page</string>
+    <string name="open_the_menu">open the menu</string>
+    <string name="review_the_app">rate this app</string>
+    <string name="turn_cheese_wheel">turn the wheel of cheese</string>
+    <string name="add_member">add Member (add qr code)</string>
 </resources>

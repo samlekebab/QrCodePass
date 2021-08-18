@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.atheris.qrcodepass.qrcode.logd
 
 
 class QrCodeWidget : AppWidgetProvider() {
@@ -18,6 +17,7 @@ class QrCodeWidget : AppWidgetProvider() {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         var qr= QR(context)
         val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         val views = RemoteViews(context.packageName, R.layout.qr_code_widget).apply {
