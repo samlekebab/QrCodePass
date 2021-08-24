@@ -40,16 +40,18 @@ open abstract class PagerAdapter(fm: FragmentManager, lc: Lifecycle, val dotView
         //logd(idList.toString())
     }
     open fun putAtTheEnd(position:Int){
-        Pair(idList[position]!!,map[position]!!).let {
-            //logd("$count")
-            for (i in position until count - 1) {
-                idList[i] = idList[i + 1]!!
-                map[i]=map[i+1]!!
+        if (idList.containsKey(position)&&map.containsKey(position)) {
+            Pair(idList[position]!!, map[position]!!).let {
+                //logd("$count")
+                for (i in position until count - 1) {
+                    idList[i] = idList[i + 1]!!
+                    map[i] = map[i + 1]!!
+                }
+                idList[count] = it.first
+                map[count] = it.second
             }
-            idList[count] = it.first
-            map[count]= it.second
+            //logd(idList.toString())
         }
-        //logd(idList.toString())
     }
 }
 public class MainPagerAdapter(fm: FragmentManager, lc: Lifecycle, var inZoom: InZoom, dotView: DotView?=null, val familyDotView: DotView) :

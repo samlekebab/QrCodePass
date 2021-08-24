@@ -40,9 +40,12 @@
         <com.atheris.qrcodepass.MenuItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:text="@string/review_the_app">
+            app:text="@string/add_member"/>
 
-        </com.atheris.qrcodepass.MenuItem>
+        <com.atheris.qrcodepass.MenuItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:text="@string/share"/>
 
         <com.atheris.qrcodepass.MenuItem
             android:layout_width="match_parent"
@@ -52,9 +55,9 @@
         <com.atheris.qrcodepass.MenuItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:text="@string/add_member">
+            app:text="@string/review_the_app"/>
 
-        </com.atheris.qrcodepass.MenuItem>
+
 
     </LinearLayout>
 
@@ -214,6 +217,8 @@
                     android:clickable="true"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_cadena"
                     android:focusable="true" />

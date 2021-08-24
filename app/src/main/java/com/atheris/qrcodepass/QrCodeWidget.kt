@@ -22,7 +22,7 @@ class QrCodeWidget : AppWidgetProvider() {
 
         val views = RemoteViews(context.packageName, R.layout.qr_code_widget).apply {
             setOnClickPendingIntent(R.id.widgetQrImage, pendingIntent)
-            this.setBitmap(R.id.widgetQrImage, "setImageBitmap", qr.getQr())
+            setBitmap(R.id.widgetQrImage, "setImageBitmap", qr.getQr())
         }
         for (id in appWidgetIds){
             appWidgetManager.updateAppWidget(id, views)

@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.viewpager2.widget.ViewPager2
 import com.atheris.qrcodepass.qrcode.QrGetter
@@ -104,8 +106,11 @@ class QrFragmentPager(val dotView : DotView) : Fragment(), DeleteInterface {
                     page.scaleY=1f+min(position*0.2f,0.05f)
                 }
             }
-
+            setFragmentResultListener("getCurrentPage"){_,_->
+                setFragmentResult("getCurrentPageResult", bundleOf(Pair("currentPage",vp.currentItem)) )
+            }
         }
+
     }
 
 

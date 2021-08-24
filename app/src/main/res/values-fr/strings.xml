@@ -16,4 +16,5 @@
     <string name="review_the_app">noter l\'application</string>
     <string name="turn_cheese_wheel">tourner la roue du fromage</string>
     <string name="add_member">ajouter un membre (ajouter un qr code)</string>
+    <string name="share">share this qr code</string>
 </resources>

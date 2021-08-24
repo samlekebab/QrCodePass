@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -24,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.atheris.qrcodepass.picker.ItemModel
 import com.atheris.qrcodepass.picker.ItemType
 import com.atheris.qrcodepass.picker.pickerDialog
+import com.atheris.qrcodepass.qrcode.QrGetter
 import com.atheris.qrcodepass.qrcode.logd
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BinaryBitmap
@@ -172,26 +175,47 @@ class MainActivity() : AppCompatActivity(), InZoom{
         menuButton.setOnClickListener{
             mainContainer.toogleMenu()
         }
-
         menu.getChildAt(0).setOnClickListener {
-            Intent(Intent.ACTION_VIEW).also {intent->
-                intent.data = Uri.parse("""https://play.google.com/store/apps/details?id=com.atheris.qrcodepass&referrer=utm_source%3Din_app%26utm_medium%3Din_app""")
-                startActivity(intent)
-            }
-        }
-        menu.getChildAt(1).setOnClickListener {
-            Intent(Intent.ACTION_VIEW).also {intent->
-                intent.data = Uri.parse("""https://play.google.com/store/apps/details?id=com.atheris.fromaGame&referrer=utm_source%3Din_app%26utm_medium%3Din_app"""")
-                startActivity(intent)
-            }
-        }
-        menu.getChildAt(2).setOnClickListener {
             supportFragmentManager.setFragmentResult("addQrcode", Bundle())
             isAddingMember=true
             mPager.currentItem=0
             mainContainer.toogleMenu()
             startScan()
         }
+        menu.getChildAt(1).setOnClickListener {
+            supportFragmentManager.setFragmentResult("getCurrentPage",Bundle())
+        }
+        supportFragmentManager.setFragmentResultListener("getCurrentPageResult",this){_,bundle->
+            val noQr = bundle.getInt("currentPage",0)
+            Intent(Intent.ACTION_SEND).also{intent->
+                if (QrGetter.mImages.containsKey(noQr)) {
+                    intent.type = "image/jpeg"
+                    var file = File.createTempFile("qr_code", ".png", externalCacheDir)
+                    var outputStream = file.outputStream()
+                    QrGetter.mImages[noQr]!!.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+                    var uri = Uri.parse(
+                        MediaStore.Images.Media.insertImage(
+                            contentResolver,
+                            QrGetter.mImages[noQr],
+                            "qr code",
+                            "qr code"
+                        )
+                    )
+                    intent.putExtra(Intent.EXTRA_STREAM, uri)
+                    startActivity(Intent.createChooser(intent, "send qr code"))
+                }
+            }
+
+        }
+        menu.getChildAt(2).setOnClickListener {
+            startActivity(PlayIntent.cheeseWheelIntent)
+        }
+        menu.getChildAt(3).setOnClickListener {
+            startActivity(PlayIntent.rateThisAppIntent)
+        }
+
+
+
 
     }
 

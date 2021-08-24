@@ -11,7 +11,7 @@ class MainView(context : Context, attrs : AttributeSet) : ConstraintLayout(conte
     set(v){
         field = v
         var margin = dpToPx(5f)
-        translationYAnimated = (if(field) 1 else 0) *( 3f *
+        translationYAnimated = (if(field) 1 else 0) *( 4f *
                 (context.resources.getDimensionPixelSize(R.dimen.menu_item_height) + 2*margin)+margin)
     }
     fun dpToPx(dpValue: Float): Int {

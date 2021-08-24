@@ -23,4 +23,5 @@
     <string name="review_the_app">rate this app</string>
     <string name="turn_cheese_wheel">turn the wheel of cheese</string>
     <string name="add_member">add Member (add qr code)</string>
+    <string name="share">share this qr code</string>
 </resources>

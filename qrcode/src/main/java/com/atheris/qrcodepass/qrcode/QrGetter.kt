@@ -3,6 +3,7 @@ package com.atheris.qrcodepass.qrcode
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
@@ -87,16 +88,17 @@ open class QrGetter(val context: Context, val sharedPrefName : String,val width:
         }
         mImages[qrNo] = Bitmap.createBitmap(width, width, Bitmap.Config.RGB_565)
         //Log.d("mtag",value);
+        val isEU = isEU(qrNo)
         try {
             if (!value.isNullOrEmpty()) {
-                val qrCodeWriter = if (isEU(qrNo)) {
+                val qrCodeWriter = if (isEU) {
                     QRCodeWriter()
                 } else {
                     DataMatrixWriter()
                 }
                 val bitMatrix = qrCodeWriter.encode(
                     value,
-                    if (isEU(qrNo)) {
+                    if (isEU) {
                         BarcodeFormat.QR_CODE
                     } else {
                         BarcodeFormat.DATA_MATRIX
