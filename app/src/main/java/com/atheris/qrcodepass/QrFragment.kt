@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.atheris.qrcodepass.qrcode.logd
 
 class QrFragment(private var noQr:Int = 0) : Fragment(), DeleteInterface {
-
+    constructor():this(0)
     private lateinit var qr: QR;
 
     override fun onCreateView(

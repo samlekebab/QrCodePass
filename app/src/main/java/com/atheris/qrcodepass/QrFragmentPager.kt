@@ -14,7 +14,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.atheris.qrcodepass.qrcode.QrGetter
 import kotlin.math.min
 
-class QrFragmentPager(val dotView : DotView) : Fragment(), DeleteInterface {
+class QrFragmentPager(val dotView : DotView?) : Fragment(), DeleteInterface {
+    constructor():this(null)
+
     lateinit var viewPager2 : ViewPager2
     private val sharedPreferences:SharedPreferences
         get(){
@@ -62,7 +64,7 @@ class QrFragmentPager(val dotView : DotView) : Fragment(), DeleteInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager2 = view.findViewById<ViewPager2>(R.id.qr_view_pager_2).also{vp->
-            dotView.registerViewPager2(vp)
+            dotView?.registerViewPager2(vp)
             vp.adapter = QrPageAdapter().also {adapt->
                 adapt.count = sharedPreferences.getInt("qrCount", 1)
                 adapt.notifyDataSetChanged()
